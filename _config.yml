@@ -1,0 +1,16 @@
+markdown: kramdown
+title: Jason Wu
+
+paginate: 6
+gems: [jekyll-paginate]
+paginate_path: "/blog/page:num/"
+
+highlighter: pygments
+
+collections:
+  daily:
+    output: true
+    permalink: /daily/:path/
+  album:
+    output: true
+    permalink: /album/:path/
