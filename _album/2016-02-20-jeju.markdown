@@ -23,3 +23,18 @@ description: 记录济州岛的风景，游玩于西归浦市和日出峰景区
 
 <img class="col three" src="{{ site.baseurl }}/img/jeju/5.jpg" alt="" title="">
 <img class="col three" src="{{ site.baseurl }}/img/jeju/9.jpg" alt="" title="">
+
+<div class="ds-thread" data-thread-key="jeju" data-title="济州岛一游" data-url="http://wotocheng.com/album/2016-02-20-jeju/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"wotojc"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0]
+   || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
