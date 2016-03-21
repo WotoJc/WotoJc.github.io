@@ -5,7 +5,7 @@ paginate: 6
 gems: [jekyll-paginate]
 paginate_path: "/blog/page:num/"
 
-highlighter: pygments
+highlighter: rouge
 
 collections:
   daily:
