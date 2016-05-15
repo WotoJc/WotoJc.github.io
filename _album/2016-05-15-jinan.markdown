@@ -1,0 +1,22 @@
+---
+layout: post
+title: 济南城建
+date:   2016-05-14  7:33:19
+description: 平时出去逛逛时拍下来的一些济南城建的照片
+---
+
+先来一张站在超然阁上拍的济南天际线，大明湖与老成区。
+  <img class="col three" src="{{ site.baseurl }}/img/jinan/lake.jpg" alt="" title="济南老城区天际线"/>
+
+朝南面再来一张，眼看就是经十路与泉城广场
+<img class="col three" src="{{ site.baseurl }}/img/jinan/south.jpg" alt="" title="山与城"/>
+
+下面就是济南新CBD，然而没有命名是什么CBD，城东方向的CBD规划面积比西城大，人气也旺很多.(一是中国重汽研发中心，二是汉峪金谷)
+  <img class="col three" src="{{ site.baseurl }}/img/jinan/zhongqi.jpg" alt="" title="中国重汽研发中心"/>
+  <img class="col three" src="{{ site.baseurl }}/img/jinan/hanyu.jpg" alt="" title="汉峪金谷主楼"/>
+
+这是山东省剧院，上那门歌剧艺术鉴赏的老师图鉴我们去，但是我白天去也实在是太荒凉了啊
+<img class="col three" src="{{ site.baseurl }}/img/jinan/art.jpg" alt="" title="山东省剧院"/>
+
+记得那天出去拍绿地中心，带着同学的D5200架个三脚架练练手，旁边的老伯伯问我，你是新闻拍摄记者吗？，我一脸懵。。
+<img class="col three" src="{{ site.baseurl }}/img/jinan/lvdi.jpg" alt="" title="济南绿地普利中心"/>
