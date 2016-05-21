@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>多边形的扫描转换算法与区域填充(利用js实现)</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="canonical" href="/daily/2016%EF%BC%8D5-20-Fill-Polygon/">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <nav class="site-nav">
+
+      <div class="trigger">
+        <!-- Jason Wu instead of blog -->
+        <a class="page-link" href="/">博客</a>
+
+        
+          
+          <a class="page-link" href="/about/">关于</a>
+          
+        
+          
+          <a class="page-link" href="/album/">相册</a>
+          
+        
+          
+          <a class="page-link" href="/daily/">文章</a>
+          
+        
+          
+        
+          
+        
+
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">多边形的扫描转换算法与区域填充(利用js实现)</h1>
+    <p class="post-meta"></p>
+  </header>
+
+  <article class="post-content">
+    <h3>一、概念</h3>
+<hr style="margin:10px" />
+
+<p>
+1、顶点表示是用多边形的顶点序列来表示多边形。这种表示直观、几何意义强、占内存少，易于进行几何变换，但由于它没有明确指出哪些象素在多边形内，故不能直接用于面着色
+</p>
+
+<p>
+2、点阵表示是用位于多边形内的象素集合来刻画多边形。这种表示丢失了许多几何信息，但便于帧缓冲器表示图形，是面着色所需要的图形表示形式。光栅图形的一个基本问题是把多边形的顶点表示转换为点阵表示，这种转换称为多边形的扫描转换。
+</p>
+
+<p>
+3、光栅图形的一个基本问题是把多边形的顶点表示转换为点阵表示，这种转换称为多边形的扫描转换。
+</p>
+<p><img class="col three" src="/img/FillDraw.png" alt="实现效果" title="" /></p>
+
+<p><br /></p>
+<h3>二、实现步骤</h3>
+<hr style="margin:10px" />
+
+<p>1、获取封闭多边形的顶点</p>
+
+<p>2、扫描顶点，生成边表NET</p>
+<p>3、运行扫描线算法</p>
+<p style="margin-left:20px">(1)计算扫描线与多边形各边的交点</p>
+<p style="margin-left:20px">(2)把所有交点的x值递增顺序排序</p>
+<p style="margin-left:20px">(3)每对交点代表扫描线与多边形的一个相交区间</p>
+<p style="margin-left:20px">(4)把相交区间内的象素置成多边形颜色</p>
+
+<h3>三、主要代码</h3>
+
+<hr style="margin:10px" />
+
+<p><a href="https://github.com/WotoJc/PostFile/tree/master/FillPolygon" target="_blank" style="margin:10px">点击链接查看源代码</a></p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="sr">/**
+* 边表对象，x 记录 x 的坐标纸，maxy 边的最高坐标y，dx 边的导数，line 扫描边值
+*/</span>
+<span class="n">function</span>  <span class="no">ET</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">this</span><span class="p">.</span><span class="nf">x</span><span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+    <span class="n">this</span><span class="p">.</span><span class="nf">dx</span><span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+    <span class="n">this</span><span class="p">.</span><span class="nf">maxy</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+    <span class="n">this</span><span class="p">.</span><span class="nf">line</span> <span class="o">=</span> <span class="n">d</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="sr">//</span> <span class="err">点、活性边表、边表</span>
+<span class="n">var</span> <span class="n">point</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">Array</span><span class="p">();</span>
+<span class="n">var</span> <span class="no">AET</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">Array</span><span class="p">();</span>
+<span class="n">var</span> <span class="no">NET</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">Array</span><span class="p">();</span>
+<span class="sr">//</span> <span class="err">多边形</span><span class="n">y</span><span class="err">的范围</span>
+<span class="n">var</span> <span class="n">maxY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">var</span> <span class="n">minY</span> <span class="o">=</span> <span class="mi">1000</span> <span class="p">;</span>
+
+<span class="sr">//</span> <span class="err">画直线（这里填充图形没有用到点填充，直接用了线填充）</span>
+<span class="n">function</span> <span class="n">drawLine</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">canvas</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"board"</span><span class="p">);</span>
+    <span class="n">var</span> <span class="n">context</span> <span class="o">=</span> <span class="n">canvas</span><span class="p">.</span><span class="nf">getContext</span><span class="p">(</span><span class="s1">'2d'</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineWidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">strokeStyle</span><span class="o">=</span><span class="s2">"black"</span><span class="p">;</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineTo</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">stroke</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="sr">//</span><span class="err">画多边形</span>
+<span class="n">function</span> <span class="n">draw</span><span class="p">(){</span>
+    <span class="sr">//</span><span class="err">获取窗口鼠标坐标</span>
+    <span class="n">var</span> <span class="n">x</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="nf">clientX</span><span class="p">;</span>
+    <span class="n">var</span> <span class="n">y</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="nf">clientY</span><span class="p">;</span>
+
+    <span class="sr">//</span> <span class="err">把顶点添加到数组</span>
+    <span class="n">var</span> <span class="nb">p</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">Array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">);</span>
+    <span class="n">point</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="nb">p</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">point</span><span class="p">.</span><span class="nf">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">){</span>
+        <span class="n">var</span> <span class="n">n</span> <span class="o">=</span> <span class="n">point</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span>
+        <span class="n">drawLine</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="sr">//</span> <span class="err">转换顶点到边表</span>
+<span class="n">function</span> <span class="n">fillDraw</span><span class="p">(){</span>
+    <span class="sr">//</span><span class="err">连接最后一条边</span>
+    <span class="n">var</span> <span class="n">n</span> <span class="o">=</span> <span class="n">point</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span>
+    <span class="n">drawLine</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="sr">//</span> <span class="err">计算</span><span class="n">maxX</span> <span class="err">和</span><span class="n">maxY</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">point</span><span class="p">.</span><span class="nf">length</span> <span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span> <span class="n">point</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">maxY</span><span class="p">){</span>
+            <span class="n">maxY</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span> <span class="n">point</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">minY</span><span class="p">){</span>
+            <span class="n">minY</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="sr">//</span> <span class="err">生成边表</span>
+    <span class="n">initNET</span><span class="p">();</span>
+
+    <span class="sr">//</span> <span class="err">根据活性边表</span> <span class="err">填充多边形</span>
+    <span class="n">fillPolygon</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">function</span> <span class="n">initNET</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="sr">//</span><span class="err">获取顶点数</span>
+    <span class="n">var</span> <span class="n">n</span> <span class="o">=</span> <span class="n">point</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span>
+    <span class="sr">//</span><span class="err">添加边表</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="o">=</span> <span class="n">minY</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">maxY</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">point</span><span class="p">.</span><span class="nf">length</span> <span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">point</span><span class="p">[(</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">{</span>
+                    <span class="n">var</span> <span class="n">x</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+                    <span class="n">var</span> <span class="n">maxy</span> <span class="o">=</span> <span class="n">point</span><span class="p">[(</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="p">;</span>
+                    <span class="n">var</span> <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span> <span class="n">point</span><span class="p">[(</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span><span class="o">/</span><span class="p">(</span> <span class="n">point</span><span class="p">[(</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span> <span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span>
+                    <span class="n">var</span> <span class="n">et</span> <span class="o">=</span>  <span class="kp">new</span> <span class="no">ET</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">dx</span><span class="p">,</span><span class="n">maxy</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+                    <span class="no">NET</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="n">et</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">point</span><span class="p">[(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">{</span>
+                    <span class="n">var</span> <span class="n">x</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+                    <span class="n">var</span> <span class="n">maxy</span> <span class="o">=</span> <span class="n">point</span><span class="p">[(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="p">;</span>
+                    <span class="n">var</span> <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span> <span class="n">point</span><span class="p">[(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span><span class="o">/</span><span class="p">(</span> <span class="n">point</span><span class="p">[(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span> <span class="n">point</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span>
+                    <span class="n">var</span> <span class="n">et</span> <span class="o">=</span>  <span class="kp">new</span> <span class="no">ET</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">dx</span><span class="p">,</span><span class="n">maxy</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+                    <span class="no">NET</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="n">et</span><span class="p">);</span>
+
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="sr">//</span> <span class="err">根据活性边表</span> <span class="err">填充多边形</span>
+<span class="n">function</span> <span class="n">fillPolygon</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="o">=</span> <span class="n">minY</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">maxY</span> <span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="sr">//</span><span class="err">添加与扫描线相交的边到活性边表</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="no">NET</span><span class="p">.</span><span class="nf">length</span> <span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="no">NET</span><span class="p">[</span><span class="n">j</span><span class="p">].</span><span class="nf">line</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="no">AET</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="no">NET</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+    <span class="sr">//</span><span class="err">顺序排序</span>
+    <span class="no">AET</span><span class="p">.</span><span class="nf">sort</span><span class="p">(</span><span class="n">sortet</span><span class="p">);</span>
+
+    <span class="sr">//</span><span class="err">移除已完成的填充的活性边表</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="no">AET</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="no">AET</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="nf">maxy</span> <span class="o">&lt;=</span> <span class="n">i</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="no">AET</span><span class="p">.</span><span class="nf">splice</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+            <span class="sr">//</span> <span class="err">这里要注意</span> <span class="err">－－</span><span class="n">k</span> <span class="err">不然某些特别的多边形会出错</span>
+            <span class="o">--</span><span class="n">k</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="sr">//</span><span class="err">填充图形</span>
+    <span class="k">if</span> <span class="p">(</span><span class="no">AET</span><span class="p">.</span><span class="nf">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+          <span class="n">var</span> <span class="n">can</span> <span class="o">=</span> <span class="kp">false</span><span class="p">;</span>
+          <span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="no">AET</span><span class="p">.</span><span class="nf">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span>
+          <span class="p">{</span>
+              <span class="n">can</span> <span class="o">=</span> <span class="o">!</span><span class="n">can</span><span class="p">;</span>
+              <span class="k">if</span> <span class="p">(</span><span class="n">can</span><span class="p">)</span>
+              <span class="p">{</span>
+                  <span class="sr">//</span> <span class="err">得到起点和终点，成对出现</span>
+                  <span class="n">var</span> <span class="n">start</span> <span class="o">=</span> <span class="no">AET</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="nf">x</span><span class="p">;</span>
+                  <span class="n">var</span> <span class="k">end</span> <span class="o">=</span> <span class="no">AET</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="nf">x</span><span class="p">;</span>
+                  <span class="sr">//</span> <span class="err">填充</span>
+                  <span class="n">drawLine</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="k">end</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+              <span class="p">}</span>
+              <span class="no">AET</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="nf">x</span> <span class="o">+=</span> <span class="no">AET</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="nf">dx</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="n">var</span> <span class="n">n</span> <span class="o">=</span> <span class="no">AET</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span>
+          <span class="no">AET</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="nf">x</span> <span class="o">+=</span> <span class="no">AET</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="nf">dx</span><span class="p">;</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="sr">//</span><span class="err">如果</span><span class="n">x</span><span class="err">不相等，则根据</span><span class="n">x</span><span class="err">比较，小的返回</span><span class="kp">true</span><span class="err">，如果</span><span class="n">x</span><span class="err">相等，根据斜率比较，小的返回</span><span class="kp">true</span>
+<span class="n">function</span> <span class="n">sortet</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="nf">x</span> <span class="o">!=</span> <span class="n">a</span><span class="p">.</span><span class="nf">b</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">.</span><span class="nf">x</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">x</span> <span class="p">?</span> <span class="o">-</span><span class="mi">1</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">.</span><span class="nf">dx</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">dx</span> <span class="p">?</span> <span class="o">-</span><span class="mi">1</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+  </body>
+
+</html>

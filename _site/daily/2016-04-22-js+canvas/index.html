@@ -65,194 +65,196 @@
   <article class="post-content">
     <blockquote>
 这其实是一份作业。由于windows分区才30G，并不能够放得下vs2015 community，另外网上的Cocoa教程甚少，OS X作罢，转HTML5+js。主要是用canvas画坐标轴和取点，再加上js鼠标事件来实现,拟合算法为最小二乘法。
+<br />
+<br />
+
+<a href="https://github.com/WotoJc/PostFile/tree/master/linear" target="_blank">点击查看源代码</a>
 </blockquote>
 <p><img class="col three" src="/img/canvas.png" alt="" title="" /></p>
 
 <h3>js部分代码</h3>
 <p><br /></p>
-<pre>
-// 换行纪录(坐标数据输出)
-var count = 0;
-// 点的数组
-var coordinate = new Array();
-//结果
-var a ;
-var b ;
-//画坐标轴
-function drawAxes(){
-    //画出坐标轴
-    var canvas = document.getElementById("canvas");
-    var context = canvas.getContext('2d');
-    context.moveTo(400,0);
-    context.lineTo(400,600);
-    context.moveTo(400,0);
-    context.lineTo(395,5);
-    context.moveTo(400,0);
-    context.lineTo(405,5);
-    context.moveTo(800,300);
-    context.lineTo(795,295);
-    context.moveTo(800,300);
-    context.lineTo(795,305);
-    context.stroke();
-    context.moveTo(0,300);
-    context.lineTo(800,300);
-    context.stroke();
-    context.font="12px Arial";
-    context.fillText("(0,0)",405,290);
-    context.fillText("y",405,15);
-    context.fillText("x",780,290);
-}
 
-function getPos(){
-    //显示鼠标当前坐标
-    document.getElementById("x").innerHTML = " x: "+(event.clientX-410);
-    }
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="sr">//</span> <span class="err">换行纪录</span><span class="p">(</span><span class="err">坐标数据输出</span><span class="p">)</span>
+<span class="n">var</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="sr">//</span> <span class="err">点的数组</span>
+<span class="n">var</span> <span class="n">coordinate</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">Array</span><span class="p">();</span>
+<span class="sr">//</span><span class="err">结果</span>
+<span class="n">var</span> <span class="n">a</span> <span class="p">;</span>
+<span class="n">var</span> <span class="n">b</span> <span class="p">;</span>
+<span class="sr">//</span><span class="err">画坐标轴</span>
+<span class="n">function</span> <span class="n">drawAxes</span><span class="p">(){</span>
+    <span class="sr">//</span><span class="err">画出坐标轴</span>
+    <span class="n">var</span> <span class="n">canvas</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"canvas"</span><span class="p">);</span>
+    <span class="n">var</span> <span class="n">context</span> <span class="o">=</span> <span class="n">canvas</span><span class="p">.</span><span class="nf">getContext</span><span class="p">(</span><span class="s1">'2d'</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineTo</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">600</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineTo</span><span class="p">(</span><span class="mi">395</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineTo</span><span class="p">(</span><span class="mi">405</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">300</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineTo</span><span class="p">(</span><span class="mi">795</span><span class="p">,</span><span class="mi">295</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">300</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineTo</span><span class="p">(</span><span class="mi">795</span><span class="p">,</span><span class="mi">305</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">stroke</span><span class="p">();</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">300</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineTo</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">300</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">stroke</span><span class="p">();</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">font</span><span class="o">=</span><span class="s2">"12px Arial"</span><span class="p">;</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">fillText</span><span class="p">(</span><span class="s2">"(0,0)"</span><span class="p">,</span><span class="mi">405</span><span class="p">,</span><span class="mi">290</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">fillText</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span><span class="mi">405</span><span class="p">,</span><span class="mi">15</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">fillText</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span><span class="mi">780</span><span class="p">,</span><span class="mi">290</span><span class="p">);</span>
+<span class="p">}</span>
 
-function drawPoint(){
-    //画点
-    var x = event.clientX;          //画图坐标
-    var y = event.clientY;          //画图坐标
-    var c=document.getElementById("canvas");
-    var ctx=c.getContext("2d");
-    ctx.fillStyle="#000000";
-    ctx.fillRect(x-10,y-10,3,3);
-    //添加坐标纪录
-    var act_x = x - 410;
-    var act_y = 310 - y;
-    var coo = new Array(act_x,act_y);
-    coordinate.unshift(coo);
-    //显示坐标纪录
-    //每输出4个换行
-    count++;
-    if(count%4==0){
-        document.getElementById("coordinates").innerHTML+="("+act_x+","+act_y+") ";
-        } else {
-            document.getElementById("coordinates").innerHTML+="("+act_x+","+act_y+") ";
-        }
-    }
+<span class="n">function</span> <span class="n">getPos</span><span class="p">(){</span>
+    <span class="sr">//</span><span class="err">显示鼠标当前坐标</span>
+    <span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"x"</span><span class="p">).</span><span class="nf">innerHTML</span> <span class="o">=</span> <span class="s2">" x: "</span><span class="o">+</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="nf">clientX</span><span class="o">-</span><span class="mi">410</span><span class="p">);</span>
+    <span class="p">}</span>
 
-//最小二乘法线性拟合
-function math(){
-    // E(xy)
-    var num1 = 0;
-    // E(x)*E(y)/N
-    var num2 = 0;
-    var num21 = 0;
-    // E(x^2)
-    var num3 = 0
-    // (E(x))^2/N
-    var num4 = 0;
-    for(var i = 0 ; i &lt; coordinate.length ; i++)
-    {
-        num1+=(coordinate[i][0]*coordinate[i][1]); //x*y 的和
-        num2+=coordinate[i][0];         // x 的和
-        num21+=coordinate[i][1];        // y 的和
-        num3+=coordinate[i][0]*coordinate[i][0];  //x^2 的和
-    }
-    var n = coordinate.length;
-    num4 = num2*num2/n;
-    var avgX = num2/n;
-    var avgY = num21/n;
-    num2 = num2*num21/n;
-    a = (num1-num2)/(num3-num4);
-    b = avgY-a*avgX;
-    if (b &gt; 0){
-        document.getElementById("coordinates").innerHTML = " y = "+a+" x + "+b;
-        } else {
-            document.getElementById("coordinates").innerHTML = " y = "+a+" x - "+Math.abs(b);
-        }
-    }
-    //画出拟合后的直线
-    var canvas = document.getElementById("canvas");
-    var context = canvas.getContext('2d');
-    //直线起点
-    context.moveTo(0,-(a*(-400)+b)+305);
-    context.lineTo(800,-(a*400+b)+305);
-    context.stroke();
-}
-</pre>
-<p><br /></p>
-<h3>html部分代码</h3>
-<p><br /></p>
+<span class="n">function</span> <span class="n">drawPoint</span><span class="p">(){</span>
+    <span class="sr">//</span><span class="err">画点</span>
+    <span class="n">var</span> <span class="n">x</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="nf">clientX</span><span class="p">;</span>          <span class="sr">//</span><span class="err">画图坐标</span>
+    <span class="n">var</span> <span class="n">y</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="nf">clientY</span><span class="p">;</span>          <span class="sr">//</span><span class="err">画图坐标</span>
+    <span class="n">var</span> <span class="n">c</span><span class="o">=</span><span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"canvas"</span><span class="p">);</span>
+    <span class="n">var</span> <span class="n">ctx</span><span class="o">=</span><span class="n">c</span><span class="p">.</span><span class="nf">getContext</span><span class="p">(</span><span class="s2">"2d"</span><span class="p">);</span>
+    <span class="n">ctx</span><span class="p">.</span><span class="nf">fillStyle</span><span class="o">=</span><span class="s2">"#000000"</span><span class="p">;</span>
+    <span class="n">ctx</span><span class="p">.</span><span class="nf">fillRect</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">);</span>
+    <span class="sr">//</span><span class="err">添加坐标纪录</span>
+    <span class="n">var</span> <span class="n">act_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">410</span><span class="p">;</span>
+    <span class="n">var</span> <span class="n">act_y</span> <span class="o">=</span> <span class="mi">310</span> <span class="o">-</span> <span class="n">y</span><span class="p">;</span>
+    <span class="n">var</span> <span class="n">coo</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">Array</span><span class="p">(</span><span class="n">act_x</span><span class="p">,</span><span class="n">act_y</span><span class="p">);</span>
+    <span class="n">coordinate</span><span class="p">.</span><span class="nf">unshift</span><span class="p">(</span><span class="n">coo</span><span class="p">);</span>
+    <span class="sr">//</span><span class="err">显示坐标纪录</span>
+    <span class="sr">//</span><span class="err">每输出</span><span class="mi">4</span><span class="err">个换行</span>
+    <span class="n">count</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">count</span><span class="o">%</span><span class="mi">4</span><span class="o">==</span><span class="mi">0</span><span class="p">){</span>
+        <span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"coordinates"</span><span class="p">).</span><span class="nf">innerHTML</span><span class="o">+=</span><span class="s2">"("</span><span class="o">+</span><span class="n">act_x</span><span class="o">+</span><span class="s2">","</span><span class="o">+</span><span class="n">act_y</span><span class="o">+</span><span class="s2">") &lt;/br&gt;"</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"coordinates"</span><span class="p">).</span><span class="nf">innerHTML</span><span class="o">+=</span><span class="s2">"("</span><span class="o">+</span><span class="n">act_x</span><span class="o">+</span><span class="s2">","</span><span class="o">+</span><span class="n">act_y</span><span class="o">+</span><span class="s2">") "</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 
-<pre>
-<xmp>
-<body>
-<div>
-    <div id="box">
-        <canvas id="canvas" width="800" height="600" onmousemove="getPos()" onmousedown="drawPoint()"></canvas>
-        
-    </div>
-    <div id="text">
-        <p class="pos" id="x">x:</p>
-        <p class="pos" id="y">y:</p>
-        <button onclick="math()" class="button">直线拟合</button>
-        <p id="coordinates"></p>
+<span class="sr">//</span><span class="err">最小二乘法线性拟合</span>
+<span class="n">function</span> <span class="n">math</span><span class="p">(){</span>
+    <span class="sr">//</span> <span class="no">E</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
+    <span class="n">var</span> <span class="n">num1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="sr">//</span> <span class="no">E</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="no">E</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="no">N</span>
+    <span class="n">var</span> <span class="n">num2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">var</span> <span class="n">num21</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="sr">//</span> <span class="no">E</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">var</span> <span class="n">num3</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sr">//</span> <span class="p">(</span><span class="no">E</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">^</span><span class="mi">2</span><span class="o">/</span><span class="no">N</span>
+    <span class="n">var</span> <span class="n">num4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">coordinate</span><span class="p">.</span><span class="nf">length</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">num1</span><span class="o">+=</span><span class="p">(</span><span class="n">coordinate</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">coordinate</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span> <span class="sr">//x</span><span class="o">*</span><span class="n">y</span> <span class="err">的和</span>
+        <span class="n">num2</span><span class="o">+=</span><span class="n">coordinate</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>         <span class="sr">//</span> <span class="n">x</span> <span class="err">的和</span>
+        <span class="n">num21</span><span class="o">+=</span><span class="n">coordinate</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>        <span class="sr">//</span> <span class="n">y</span> <span class="err">的和</span>
+        <span class="n">num3</span><span class="o">+=</span><span class="n">coordinate</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">coordinate</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>  <span class="sr">//x</span><span class="o">^</span><span class="mi">2</span> <span class="err">的和</span>
+    <span class="p">}</span>
+    <span class="n">var</span> <span class="n">n</span> <span class="o">=</span> <span class="n">coordinate</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span>
+    <span class="n">num4</span> <span class="o">=</span> <span class="n">num2</span><span class="o">*</span><span class="n">num2</span><span class="o">/</span><span class="n">n</span><span class="p">;</span>
+    <span class="n">var</span> <span class="n">avgX</span> <span class="o">=</span> <span class="n">num2</span><span class="o">/</span><span class="n">n</span><span class="p">;</span>
+    <span class="n">var</span> <span class="n">avgY</span> <span class="o">=</span> <span class="n">num21</span><span class="o">/</span><span class="n">n</span><span class="p">;</span>
+    <span class="n">num2</span> <span class="o">=</span> <span class="n">num2</span><span class="o">*</span><span class="n">num21</span><span class="o">/</span><span class="n">n</span><span class="p">;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">num1</span><span class="o">-</span><span class="n">num2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">num3</span><span class="o">-</span><span class="n">num4</span><span class="p">);</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">avgY</span><span class="o">-</span><span class="n">a</span><span class="o">*</span><span class="n">avgX</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+        <span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"coordinates"</span><span class="p">).</span><span class="nf">innerHTML</span> <span class="o">=</span> <span class="s2">" y = "</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="s2">" x + "</span><span class="o">+</span><span class="n">b</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"coordinates"</span><span class="p">).</span><span class="nf">innerHTML</span> <span class="o">=</span> <span class="s2">" y = "</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="s2">" x - "</span><span class="o">+</span><span class="no">Math</span><span class="p">.</span><span class="nf">abs</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="sr">//</span><span class="err">画出拟合后的直线</span>
+    <span class="n">var</span> <span class="n">canvas</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="s2">"canvas"</span><span class="p">);</span>
+    <span class="n">var</span> <span class="n">context</span> <span class="o">=</span> <span class="n">canvas</span><span class="p">.</span><span class="nf">getContext</span><span class="p">(</span><span class="s1">'2d'</span><span class="p">);</span>
+    <span class="sr">//</span><span class="err">直线起点</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">400</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">+</span><span class="mi">305</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">lineTo</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="o">-</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="mi">400</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">+</span><span class="mi">305</span><span class="p">);</span>
+    <span class="n">context</span><span class="p">.</span><span class="nf">stroke</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/pre&gt;
+&lt;br/</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">html</span><span class="err">部分代码</span><span class="o">&lt;</span><span class="sr">/h3&gt;&lt;br/</span><span class="o">&gt;</span>
 
-    </div>
-</div>
-    <script>
-        drawAxes();
-    </script>
+<span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">xmp</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"box"</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">canvas</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"canvas"</span> <span class="n">width</span><span class="o">=</span><span class="s2">"800"</span> <span class="n">height</span><span class="o">=</span><span class="s2">"600"</span> <span class="n">onMouseMove</span><span class="o">=</span><span class="s2">"getPos()"</span> <span class="n">onmousedown</span><span class="o">=</span><span class="s2">"drawPoint()"</span><span class="o">&gt;&lt;</span><span class="sr">/canvas&gt;
+        &lt;/</span><span class="n">canvas</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="sr">/div&gt;
+    &lt;div id="text"&gt;
+        &lt;p class="pos" id="x"&gt;x:&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nb">p</span> <span class="k">class</span><span class="o">=</span><span class="s2">"pos"</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"y"</span><span class="o">&gt;</span><span class="n">y</span><span class="ss">:&lt;</span><span class="o">/</span><span class="nb">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">button</span> <span class="n">onclick</span><span class="o">=</span><span class="s2">"math()"</span> <span class="k">class</span><span class="o">=</span><span class="s2">"button"</span><span class="o">&gt;</span><span class="err">直线拟合</span><span class="o">&lt;</span><span class="sr">/button&gt;
+        &lt;p id="coordinates"&gt;&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
 
-</body>
-</xmp>
-</pre>
+    <span class="o">&lt;</span><span class="sr">/div&gt;
+&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+        <span class="n">drawAxes</span><span class="p">();</span>
+    <span class="o">&lt;</span><span class="sr">/script&gt;
 
-<p><br /></p>
-<h3>main.css部分代码</h3>
-<p><br /></p>
+&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="sr">/xmp&gt;
+&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
 
-<pre>
-<xmp>
-div{
-    box-shadow: 10px 10px 5px #dddddd;
-}
+<span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">main</span><span class="p">.</span><span class="nf">css</span><span class="err">部分代码</span><span class="o">&lt;</span><span class="sr">/h3&gt;&lt;br/</span><span class="o">&gt;</span>
 
-div#box{
-    width: 800px;
-    height: 600px;
-    background-color: #ffffff ;
-    float: left;
-    border-radius: 10px 0px 0px 10px;
-    border-style: solid;
-    border-width: 2px;
-    border-color: black;
-    float: left;
-}
+<span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">xmp</span><span class="o">&gt;</span>
+<span class="n">div</span><span class="p">{</span>
+    <span class="n">box</span><span class="o">-</span><span class="ss">shadow: </span><span class="mi">10</span><span class="n">px</span> <span class="mi">10</span><span class="n">px</span> <span class="mi">5</span><span class="n">px</span> <span class="c1">#dddddd;</span>
+<span class="p">}</span>
 
-div#text{
-    width: 400px;
-    height: 600px;
-    background-color: #eee;
-    border-style: solid;
-    border-width: 2px;
-    border-color: black;
-    float: left;
-    border-radius: 0px 10px 10px 0px ;
-}
+<span class="n">div</span><span class="c1">#box{</span>
+    <span class="ss">width: </span><span class="mi">800</span><span class="n">px</span><span class="p">;</span>
+    <span class="ss">height: </span><span class="mi">600</span><span class="n">px</span><span class="p">;</span>
+    <span class="n">background</span><span class="o">-</span><span class="ss">color: </span><span class="c1">#ffffff ;</span>
+    <span class="ss">float: </span><span class="n">left</span><span class="p">;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">radius: </span><span class="mi">10</span><span class="n">px</span> <span class="mi">0</span><span class="n">px</span> <span class="mi">0</span><span class="n">px</span> <span class="mi">10</span><span class="n">px</span><span class="p">;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">style: </span><span class="n">solid</span><span class="p">;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">width: </span><span class="mi">2</span><span class="n">px</span><span class="p">;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">color: </span><span class="n">black</span><span class="p">;</span>
+    <span class="ss">float: </span><span class="n">left</span><span class="p">;</span>
+<span class="p">}</span>
 
-.pos{
-    padding: 10px;
-}
+<span class="n">div</span><span class="c1">#text{</span>
+    <span class="ss">width: </span><span class="mi">400</span><span class="n">px</span><span class="p">;</span>
+    <span class="ss">height: </span><span class="mi">600</span><span class="n">px</span><span class="p">;</span>
+    <span class="n">background</span><span class="o">-</span><span class="ss">color: </span><span class="c1">#eee;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">style: </span><span class="n">solid</span><span class="p">;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">width: </span><span class="mi">2</span><span class="n">px</span><span class="p">;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">color: </span><span class="n">black</span><span class="p">;</span>
+    <span class="ss">float: </span><span class="n">left</span><span class="p">;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">radius: </span><span class="mi">0</span><span class="n">px</span> <span class="mi">10</span><span class="n">px</span> <span class="mi">10</span><span class="n">px</span> <span class="mi">0</span><span class="n">px</span> <span class="p">;</span>
+<span class="p">}</span>
 
-.button{
-    border-color: #blue;
-    height: 24px;
-    padding: 2px 8px;
-    line-height: 1.29758;
-    border-radius: 3px;
-}
+<span class="p">.</span><span class="nf">pos</span><span class="p">{</span>
+    <span class="ss">padding: </span><span class="mi">10</span><span class="n">px</span><span class="p">;</span>
+<span class="p">}</span>
 
-#coordinates{
-    height: 430px;
-    width: 400px;
-    overflow: auto;
-    word-break: break-all;
-    background-color: #dddddd;
-}
-</xmp>
-</pre>
+<span class="p">.</span><span class="nf">button</span><span class="p">{</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">color: </span><span class="c1">#blue;</span>
+    <span class="ss">height: </span><span class="mi">24</span><span class="n">px</span><span class="p">;</span>
+    <span class="ss">padding: </span><span class="mi">2</span><span class="n">px</span> <span class="mi">8</span><span class="n">px</span><span class="p">;</span>
+    <span class="n">line</span><span class="o">-</span><span class="ss">height: </span><span class="mi">1</span><span class="o">.</span><span class="mi">29758</span><span class="p">;</span>
+    <span class="n">border</span><span class="o">-</span><span class="ss">radius: </span><span class="mi">3</span><span class="n">px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">#coordinates{</span>
+    <span class="ss">height: </span><span class="mi">430</span><span class="n">px</span><span class="p">;</span>
+    <span class="ss">width: </span><span class="mi">400</span><span class="n">px</span><span class="p">;</span>
+    <span class="ss">overflow: </span><span class="n">auto</span><span class="p">;</span>
+    <span class="n">word</span><span class="o">-</span><span class="ss">break: </span><span class="k">break</span><span class="o">-</span><span class="n">all</span><span class="p">;</span>
+    <span class="n">background</span><span class="o">-</span><span class="ss">color: </span><span class="c1">#dddddd;</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/xmp&gt;</span></code></pre></figure>
+
 
   </article>
 

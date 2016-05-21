@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>VisualBox + Vagrant 建立和管理本地服务器（OX S）</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="canonical" href="/daily/2016%EF%BC%8D5-20-LAMP/">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <nav class="site-nav">
+
+      <div class="trigger">
+        <!-- Jason Wu instead of blog -->
+        <a class="page-link" href="/">博客</a>
+
+        
+          
+          <a class="page-link" href="/about/">关于</a>
+          
+        
+          
+          <a class="page-link" href="/album/">相册</a>
+          
+        
+          
+          <a class="page-link" href="/daily/">文章</a>
+          
+        
+          
+        
+          
+        
+
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">VisualBox + Vagrant 建立和管理本地服务器（OX S）</h1>
+    <p class="post-meta"></p>
+  </header>
+
+  <article class="post-content">
+    <h3>一、下载</h3>
+<hr style="margin:10px" />
+
+<p><a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" style="margin:10px">点击下载VisualBox</a>
+<a href="https://www.vagrantup.com/downloads.html" target="_blank" style="margin:10px">点击下载Vagrant</a>
+<a href="http://www.vagrantbox.es" taget="_blank" style="margin:10px">点击下载os box</a></p>
+
+<h3>二、简介</h3>
+<hr style="margin:10px" />
+
+<p>
+Vagrant是一个基于Ruby的工具，用于创建和部署虚拟化开发环境。它使用Oracle的开源VirtualBox虚拟化系统，使用Chef创建自动化虚拟环境。
+<br />VirtualBox是Oracle开源的虚拟化系统，它支持多个平台。
+</p>
+
+<h3>三、安装</h3>
+<hr style="margin:10px" />
+
+<p>
+    假设安装的是centos 6.5<br />
+    第一步：打开终端
+<pre>
+    //这里的url是代表你要创建box的位置
+    cd url                                 
+
+    //cent 是自定义box的名字，centos-6.5.box 是下载回来的box的URL
+    vagrant box add centos centos-6.5.box  
+
+    //初始化box环境，运行这一行之后，你的选择路径的文件夹里面会有一个Vagrantfile
+    vagrant init centos
+</pre>
+<pre style="background-color: #FFFFFF">
+    接下来你需要修改Vagrantfile里面的配置信息
+    (1) 第22行 ，删除段前的 ＃ 端口转发本地访问8080端口，实际访问服务器80端口
+        config.vm.network :forwarded_port, guest: 80, host: 8080    
+    (2) 第26行 ，删除段前 ＃，这里192.168.33.10就是你本地访问的服务器地址（ip地址随意设置）
+        config.vm.network :private_network, ip: “192.168.33.10”
+    (3) 第41行，挂载点
+        改：# config.vm.synced_folder “../data”, “/vagrant_data”
+        为：config.vm.synced_folder “/Users/my/Desktop/Web”, “/var/www/html”
+        意思是将 Web 文件挂载到centos里面的html文件
+    (4) 启动环境
+    </pre>
+<pre>
+    //启动虚拟机
+    vagrant up
+    //连接到虚拟机
+    vagrant ssh
+    //然后进行LAMP的配置
+    ...
+</pre>
+<pre style="background-color: #FFFFFF">
+    如果你不需要在terminal里面进行操作，那么打开VisualBox,你会看到Centos系统正在运行
+,点击进入虚拟机。
+    需要注意的是，如果你下一次运行已经配置的虚拟机，在没有cd到已配置的文件夹的时
+侯不要直接vagrant up centos，它默认是在os x的/Users/[youComputerName]目录下新建
+一个Vagrantfile,这样VisualBox里面又多了一个这个box的虚拟机。
+    还有一点,在你配置完LAMP之后，最好就是执行一下 vagrant package 备份一份box，可以
+自己备用， 也可以发给和你一起开发的人，这样你们就可以使用同一配置的服务器。
+</pre>
+
+</p>
+
+<h3>四、其他终端代码</h3>
+<hr style="margin:10px" />
+
+<pre style="background-color: #FFFFFF">
+
+$ vagrant box add NAME URL              #添加一个box
+$ vagrant box list                      #查看本地已添加的box
+$ vagrant box remove NAME virtualbox    #删除本地已添加的box
+$ vagrant init NAME                     #初始化，创建Vagrantfile文件
+$ vagrant up                            #启动虚拟机
+$ vagrant halt                          #关闭虚拟机
+$ vagrant destroy                       #销毁虚拟机
+$ vagrant reload                        #重启虚拟机
+$ vagrant package                       #当前正在运行的VirtualBox虚拟环境打包成一个
+                                         可重复使用的box
+$ vagrant ssh                           #进入虚拟环境
+</pre>
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+  </body>
+
+</html>
