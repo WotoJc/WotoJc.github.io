@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>(PHP)Module ‘PDFlib’ already loaded in Unknown on line 0</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="canonical" href="/daily/2016-06-21-Module-modulename-already-loaded/">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <nav class="site-nav">
+
+      <div class="trigger">
+        <!-- Jason Wu instead of blog -->
+        <a class="page-link" href="/">博客</a>
+
+        
+          
+          <a class="page-link" href="/about/">关于</a>
+          
+        
+          
+          <a class="page-link" href="/album/">相册</a>
+          
+        
+          
+          <a class="page-link" href="/daily/">文章</a>
+          
+        
+          
+        
+          
+        
+
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">(PHP)Module ‘PDFlib’ already loaded in Unknown on line 0</h1>
+    <p class="post-meta"></p>
+  </header>
+
+  <article class="post-content">
+    <p>今天在终端里面测试php遇到了一个问题。编译php命令时一直这样的错误。</p>
+<pre>
+PHP Warning: Module ‘PDFlib’ already loaded in Unknown on line 0
+</pre>
+<p><code>
+原因问题是：PHP版本升级了，不需要再次引用 PDFLib这个扩展。
+解决办法：找到在phpinfo()中Scan this dir for additional .ini files的选项，在路径中找到ext-pdf.ini文件，将其删除即可。
+</code></p>
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+  </body>
+
+</html>
